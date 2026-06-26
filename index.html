@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Purushottam Apte — Embedded Systems Engineer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap"
+    rel="stylesheet" />
+  <style>
+    /* ── TOKENS ── */
+    :root {
+      --bg: #0a0e14;
+      --bg2: #0f1520;
+      --bg3: #141c2b;
+      --trace: #00c896;
+      /* PCB green trace */
+      --trace-dim: #00c89630;
+      --amber: #f5a623;
+      /* solder-joint amber — used sparingly */
+      --text: #cdd6f4;
+      --muted: #6c7a9c;
+      --border: #1e2d45;
+      --mono: 'JetBrains Mono', monospace;
+      --sans: 'Inter', sans-serif;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── SCROLLBAR ── */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--bg);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--trace);
+      border-radius: 3px;
+    }
+
+    /* ── PCB CANVAS BACKGROUND ── */
+    #pcb-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      opacity: 0.18;
+      pointer-events: none;
+    }
+
+    /* ── LAYOUT ── */
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: #0a0e14cc;
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    nav .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 1rem;
+      padding-bottom: 1rem;
+    }
+
+    .nav-logo {
+      font-family: var(--mono);
+      font-size: 0.85rem;
+      color: var(--trace);
+      letter-spacing: 0.05em;
+    }
+
+    .nav-logo span {
+      color: var(--muted);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: 0.06em;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: var(--trace);
+    }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding-top: 80px;
+    }
+
+    .hero-eyebrow {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--trace);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 1.2rem;
+    }
+
+    .hero-eyebrow::before {
+      content: '// ';
+      color: var(--muted);
+    }
+
+    h1.hero-name {
+      font-family: var(--mono);
+      font-size: clamp(2.4rem, 6vw, 4.2rem);
+      font-weight: 700;
+      color: #e8eaf6;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+
+    h1.hero-name .cursor {
+      display: inline-block;
+      width: 3px;
+      height: 0.85em;
+      background: var(--trace);
+      margin-left: 4px;
+      vertical-align: middle;
+      animation: blink 1.1s step-end infinite;
+    }
+
+    @keyframes blink {
+      50% {
+        opacity: 0;
+      }
+    }
+
+    .hero-title {
+      font-family: var(--mono);
+      font-size: clamp(1rem, 2.5vw, 1.4rem);
+      color: var(--amber);
+      margin-bottom: 1.8rem;
+      letter-spacing: 0.04em;
+    }
+
+    .hero-desc {
+      font-size: 1.05rem;
+      color: var(--muted);
+      max-width: 560px;
+      margin-bottom: 2.5rem;
+      line-height: 1.75;
+    }
+
+    .hero-cta {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      font-family: var(--mono);
+      font-size: 0.82rem;
+      letter-spacing: 0.06em;
+      padding: 0.75rem 1.6rem;
+      border-radius: 4px;
+      text-decoration: none;
+      transition: all 0.2s;
+      cursor: pointer;
+      border: none;
+      display: inline-block;
+    }
+
+    .btn-primary {
+      background: var(--trace);
+      color: #0a0e14;
+      font-weight: 700;
+    }
+
+    .btn-primary:hover {
+      background: #00e5ad;
+      transform: translateY(-1px);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--trace);
+      border: 1px solid var(--trace);
+    }
+
+    .btn-outline:hover {
+      background: var(--trace-dim);
+      transform: translateY(-1px);
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 2.5rem;
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+
+    .stat-val {
+      font-family: var(--mono);
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--trace);
+    }
+
+    .stat-label {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 0.2rem;
+      letter-spacing: 0.04em;
+    }
+
+    /* ── SECTION COMMON ── */
+    section {
+      padding: 6rem 0;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 3rem;
+    }
+
+    .section-tag {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: var(--trace);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    h2.section-title {
+      font-family: var(--mono);
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #e8eaf6;
+    }
+
+    .section-line {
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ── SKILLS GRID ── */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.2rem;
+    }
+
+    .skill-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1.4rem 1.5rem;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+
+    .skill-card:hover {
+      border-color: var(--trace);
+      transform: translateY(-2px);
+    }
+
+    .skill-card-title {
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      color: var(--trace);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.8rem;
+    }
+
+    .skill-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .tag {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      background: var(--bg3);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 0.25rem 0.6rem;
+      letter-spacing: 0.04em;
+    }
+
+    /* ── PROJECTS ── */
+    .projects-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .project-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--trace);
+      border-radius: 6px;
+      padding: 1.8rem 2rem;
+      transition: border-color 0.2s, transform 0.2s;
+      position: relative;
+    }
+
+    .project-card:hover {
+      border-color: var(--trace);
+      transform: translateY(-2px);
+    }
+
+    .project-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 0.8rem;
+      flex-wrap: wrap;
+    }
+
+    .project-name {
+      font-family: var(--mono);
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #e8eaf6;
+    }
+
+    .project-year {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: var(--amber);
+      background: #f5a62315;
+      border: 1px solid #f5a62330;
+      padding: 0.2rem 0.6rem;
+      border-radius: 3px;
+      white-space: nowrap;
+    }
+
+    .project-stack {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-bottom: 1rem;
+    }
+
+    .project-desc {
+      font-size: 0.92rem;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .project-desc li {
+      margin-left: 1.2rem;
+      margin-bottom: 0.35rem;
+    }
+
+    .project-links {
+      margin-top: 1rem;
+      display: flex;
+      gap: 0.8rem;
+    }
+
+    .project-link {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--trace);
+      text-decoration: none;
+      letter-spacing: 0.04em;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.2s;
+    }
+
+    .project-link:hover {
+      border-bottom-color: var(--trace);
+    }
+
+    /* ── EXPERIENCE ── */
+    .timeline {
+      position: relative;
+      padding-left: 1.5rem;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 8px;
+      bottom: 8px;
+      width: 1px;
+      background: var(--border);
+    }
+
+    .timeline-item {
+      position: relative;
+      padding-bottom: 2.5rem;
+    }
+
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -1.5rem;
+      top: 8px;
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--trace);
+      box-shadow: 0 0 10px var(--trace);
+    }
+
+    .timeline-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .timeline-role {
+      font-family: var(--mono);
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #e8eaf6;
+    }
+
+    .timeline-period {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: var(--amber);
+    }
+
+    .timeline-org {
+      font-size: 0.85rem;
+      color: var(--trace);
+      margin-bottom: 0.6rem;
+    }
+
+    .timeline-desc {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .timeline-desc li {
+      margin-left: 1.2rem;
+      margin-bottom: 0.3rem;
+    }
+
+    /* ── EDUCATION ── */
+    .edu-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.2rem;
+    }
+
+    .edu-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1.5rem;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+
+    .edu-card:hover {
+      border-color: var(--trace);
+      transform: translateY(-2px);
+    }
+
+    .edu-degree {
+      font-family: var(--mono);
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #e8eaf6;
+      margin-bottom: 0.4rem;
+    }
+
+    .edu-school {
+      font-size: 0.88rem;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .edu-meta {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+
+    .edu-score {
+      color: var(--trace);
+      font-weight: 700;
+    }
+
+    /* ── CONTACT ── */
+    #contact {
+      border-top: 1px solid var(--border);
+    }
+
+    .contact-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: start;
+    }
+
+    @media (max-width: 640px) {
+      .contact-inner {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+    }
+
+    .contact-heading {
+      font-family: var(--mono);
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #e8eaf6;
+      margin-bottom: 1rem;
+    }
+
+    .contact-sub {
+      font-size: 0.92rem;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 1.5rem;
+    }
+
+    .contact-links {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+    }
+
+    .contact-link {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-family: var(--mono);
+      font-size: 0.82rem;
+      color: var(--text);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .contact-link:hover {
+      color: var(--trace);
+    }
+
+    .contact-link-icon {
+      width: 32px;
+      height: 32px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+
+    /* achievement badge */
+    .achievement {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      background: #f5a62310;
+      border: 1px solid #f5a62340;
+      border-radius: 4px;
+      padding: 0.6rem 1rem;
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      color: var(--amber);
+      margin-top: 1.5rem;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 2rem 0;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+
+    /* ── MOBILE ── */
+    @media (max-width: 640px) {
+      .nav-links {
+        display: none;
+      }
+
+      .hero-stats {
+        gap: 1.5rem;
+      }
+
+      section {
+        padding: 4rem 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- PCB trace background canvas -->
+  <canvas id="pcb-canvas"></canvas>
+
+  <!-- NAV -->
+  <nav>
+    <div class="container">
+      <div class="nav-logo">PA<span>://embedded</span></div>
+      <ul class="nav-links">
+        <li><a href="#skills">skills</a></li>
+        <li><a href="#projects">projects</a></li>
+        <li><a href="#experience">experience</a></li>
+        <li><a href="#education">education</a></li>
+        <li><a href="#contact">contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="container">
+      <p class="hero-eyebrow">Embedded Systems Engineer</p>
+      <h1 class="hero-name">Purushottam Apte<span class="cursor"></span></h1>
+      <p class="hero-title">&gt; ESP32 · PCB Design (KiCad) · Real-Time Firmware</p>
+      <p class="hero-desc">
+        Final-year Electronics and Telecommunication Engineering student specializing in embedded systems and hardware
+        design.
+        Proven hands-on expertise in ESP32, PCB design (KiCad), and real-time firmware. Skilled in circuit debugging,
+        power supply design, and hardware–software integration. Seeking an Embedded Systems Engineer or Firmware
+        Engineer role.
+      </p>
+      <div class="hero-cta">
+        <a href="#contact" class="btn btn-primary">Get in touch</a>
+        <a href="#projects" class="btn btn-outline">View Projects</a>
+      </div>
+      <div class="hero-stats">
+        <div>
+          <div class="stat-val">3+</div>
+          <div class="stat-label">Production Projects</div>
+        </div>
+        <div>
+          <div class="stat-val">8.30</div>
+          <div class="stat-label">Current SGPA</div>
+        </div>
+        <div>
+          <div class="stat-val">10+</div>
+          <div class="stat-label">Protocols Mastered</div>
+        </div>
+        <div>
+          <div class="stat-val">80%</div>
+          <div class="stat-label">Attendance Effort Saved</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section id="skills">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">01 — skills</span>
+        <h2 class="section-title">Technical Stack</h2>
+        <div class="section-line"></div>
+      </div>
+      <div class="skills-grid">
+        <div class="skill-card">
+          <div class="skill-card-title">⚡ Hardware &amp; Power</div>
+          <div class="skill-tags">
+            <span class="tag">PCB Design (KiCad)</span>
+            <span class="tag">Signal Integrity Analysis</span>
+            <span class="tag">Oscilloscope Debugging</span>
+            <span class="tag">Multimeter Testing</span>
+            <span class="tag">Soldering</span>
+          </div>
+        </div>
+        <div class="skill-card">
+          <div class="skill-card-title">🔌 Embedded Systems</div>
+          <div class="skill-tags">
+            <span class="tag">ESP32</span>
+            <span class="tag">ESP8266</span>
+            <span class="tag">Embedded C/C++</span>
+            <span class="tag">GPIO</span>
+            <span class="tag">Timers</span>
+            <span class="tag">Interrupts</span>
+          </div>
+        </div>
+        <div class="skill-card">
+          <div class="skill-card-title">📡 Protocols</div>
+          <div class="skill-tags">
+            <span class="tag">CAN bus</span>
+            <span class="tag">Ethernet</span>
+            <span class="tag">Modbus</span>
+            <span class="tag">UART</span>
+            <span class="tag">I2C</span>
+            <span class="tag">SPI</span>
+            <span class="tag">MQTT</span>
+            <span class="tag">WiFi</span>
+            <span class="tag">RS-485</span>
+          </div>
+        </div>
+        <div class="skill-card">
+          <div class="skill-card-title">💻 Programming &amp; Tools</div>
+          <div class="skill-tags">
+            <span class="tag">C/C++</span>
+            <span class="tag">Python</span>
+            <span class="tag">Keil MDK</span>
+            <span class="tag">PlatformIO</span>
+            <span class="tag">Arduino IDE</span>
+            <span class="tag">Git/GitHub</span>
+          </div>
+        </div>
+        <div class="skill-card">
+          <div class="skill-card-title">🔬 Core Electronics</div>
+          <div class="skill-tags">
+            <span class="tag">Analog &amp; Digital Circuit Design</span>
+            <span class="tag">Sensors &amp; Actuators</span>
+            <span class="tag">Signal Processing</span>
+            <span class="tag">Control Systems</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section id="projects">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">02 — projects</span>
+        <h2 class="section-title">Featured Work</h2>
+        <div class="section-line"></div>
+      </div>
+      <div class="projects-list">
+
+        <div class="project-card">
+          <div class="project-header">
+            <span class="project-name">Attendify — IoT Biometric Attendance System</span>
+            <span class="project-year">2026</span>
+          </div>
+          <div class="project-stack">
+            <span class="tag">ESP32</span>
+            <span class="tag">C++</span>
+            <span class="tag">Firebase</span>
+          </div>
+          <ul class="project-desc">
+            <li>Developed an ESP32-based biometric attendance device using R307 fingerprint sensor with Firebase cloud
+              sync and offline-first architecture</li>
+            <li>Processed 100+ student entries, reducing manual attendance effort by 80% through automated attendance
+              logging and cloud-based record management</li>
+          </ul>
+          <div class="project-links">
+            <a href="https://github.com/aptepuru19" target="_blank" rel="noopener" class="project-link">→ GitHub</a>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <div class="project-header">
+            <span class="project-name">Underground Cable Fault Detection System</span>
+            <span class="project-year">2025</span>
+          </div>
+          <div class="project-stack">
+            <span class="tag">Arduino</span>
+            <span class="tag">C++</span>
+            <span class="tag">Analog Design</span>
+          </div>
+          <ul class="project-desc">
+            <li>Designed a resistance-based fault detection system identifying 3-phase cable faults with up to 1 km
+              location precision and under 5% error margin</li>
+          </ul>
+          <div class="project-links">
+            <a href="https://github.com/aptepuru19" target="_blank" rel="noopener" class="project-link">→ GitHub</a>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <div class="project-header">
+            <span class="project-name">Automatic Flood Alert and Weather Monitoring System</span>
+            <span class="project-year">2024</span>
+          </div>
+          <div class="project-stack">
+            <span class="tag">Arduino UNO</span>
+            <span class="tag">C++</span>
+            <span class="tag">IoT</span>
+          </div>
+          <ul class="project-desc">
+            <li>Designed an embedded monitoring system using Arduino UNO and environmental sensors for multi-level flood
+              detection (Level 0–7) with real-time weather monitoring</li>
+            <li>Implemented a threshold-based alert mechanism with live parameter display for continuous environmental
+              monitoring and improved flood safety</li>
+          </ul>
+          <div class="project-links">
+            <a href="https://github.com/Purushottam-13" target="_blank" rel="noopener" class="project-link">→ GitHub</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- EXPERIENCE -->
+  <section id="experience">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">03 — experience</span>
+        <h2 class="section-title">Work & Achievements</h2>
+        <div class="section-line"></div>
+      </div>
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-header">
+            <span class="timeline-role">Student Intern</span>
+            <span class="timeline-period">Jul 2022 – Sep 2022</span>
+          </div>
+          <div class="timeline-org">Pretech Automation Pvt. Ltd., Pune</div>
+          <ul class="timeline-desc">
+            <li>Wired and assembled 3 PLC control panels; tested and validated 5+ industrial automation systems</li>
+            <li>Gained hands-on exposure to relay logic, panel wiring standards, and system commissioning</li>
+          </ul>
+        </div>
+      </div>
+      <div class="achievement">
+        🏆 &nbsp; Finalist — CircuitVista 2K25 Hardware Design Competition
+      </div>
+    </div>
+  </section>
+
+  <!-- EDUCATION -->
+  <section id="education">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">04 — education</span>
+        <h2 class="section-title">Academic Background</h2>
+        <div class="section-line"></div>
+      </div>
+      <div class="edu-grid">
+        <div class="edu-card">
+          <div class="edu-degree">Bachelor of Engineering in Electronics and Telecommunication Engineering</div>
+          <div class="edu-school">P.E.S. Modern College of Engineering, Pune</div>
+          <div class="edu-meta">
+            <span>Aug 2023 – Present</span>
+            <span class="edu-score">SGPA 8.30</span>
+          </div>
+        </div>
+        <div class="edu-card">
+          <div class="edu-degree">Diploma in Electronics and Telecommunication Engineering</div>
+          <div class="edu-school">Government Polytechnic, Pune</div>
+          <div class="edu-meta">
+            <span>Jul 2020 – Jul 2023</span>
+            <span class="edu-score">82.97%</span>
+          </div>
+        </div>
+        <div class="edu-card">
+          <div class="edu-degree">SSC 10th</div>
+          <div class="edu-school">Vidyadham Prashala, Shikrapur</div>
+          <div class="edu-meta">
+            <span>Jun 2019 – Mar 2020</span>
+            <span class="edu-score">92.20%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="container">
+      <div class="contact-inner">
+        <div>
+          <h2 class="contact-heading">Let's build something.</h2>
+          <p class="contact-sub">
+            Open to Embedded Systems Engineer and Firmware Engineer roles.
+            If you're working on hardware-close software and need someone who can
+            read a schematic as fluently as a datasheet — reach out.
+          </p>
+          <a href="mailto:aptepuru19@gmail.com" class="btn btn-primary">Send an Email</a>
+        </div>
+        <div class="contact-links">
+          <a href="mailto:aptepuru19@gmail.com" class="contact-link">
+            <div class="contact-link-icon">✉</div>
+            aptepuru19@gmail.com
+          </a>
+          <a href="tel:+918855081533" class="contact-link">
+            <div class="contact-link-icon">📞</div>
+            +91 88550 81533
+          </a>
+          <a href="https://github.com/Purushottam-13" target="_blank" rel="noopener" class="contact-link">
+            <div class="contact-link-icon">⌥</div>
+            github.com/Purushottam-13
+          </a>
+          <a href="https://www.linkedin.com/in/purushottam-apte/" target="_blank" rel="noopener" class="contact-link">
+            <div class="contact-link-icon">in</div>
+            linkedin.com/in/aptepuru19
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <p>© 2026 Purushottam Apte — Embedded Systems Engineer, Pune</p>
+    </div>
+  </footer>
+
+  <script>
+    /* ── PCB Trace Background ── */
+    (function () {
+      const canvas = document.getElementById('pcb-canvas');
+      const ctx = canvas.getContext('2d');
+      const TRACE = '#00c896';
+      let W, H, nodes;
+
+      function resize() {
+        W = canvas.width = window.innerWidth;
+        H = canvas.height = window.innerHeight;
+        init();
+      }
+
+      function rand(a, b) { return a + Math.random() * (b - a); }
+
+      function init() {
+        nodes = [];
+        const count = Math.floor((W * H) / 28000);
+        for (let i = 0; i < count; i++) {
+          nodes.push({ x: rand(0, W), y: rand(0, H) });
+        }
+        draw();
+      }
+
+      function draw() {
+        ctx.clearRect(0, 0, W, H);
+        ctx.strokeStyle = TRACE;
+        ctx.lineWidth = 1;
+
+        // Draw orthogonal PCB-style traces between nearby nodes
+        for (let i = 0; i < nodes.length; i++) {
+          const a = nodes[i];
+          for (let j = i + 1; j < nodes.length; j++) {
+            const b = nodes[j];
+            const dx = b.x - a.x, dy = b.y - a.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist > 160) continue;
+            const alpha = 1 - dist / 160;
+            ctx.globalAlpha = alpha * 0.6;
+            ctx.beginPath();
+            // Route via corner (PCB L-shape)
+            ctx.moveTo(a.x, a.y);
+            ctx.lineTo(a.x, b.y);
+            ctx.lineTo(b.x, b.y);
+            ctx.stroke();
+          }
+        }
+
+        // Pads at nodes
+        ctx.globalAlpha = 0.8;
+        nodes.forEach(n => {
+          ctx.beginPath();
+          ctx.arc(n.x, n.y, 2.5, 0, Math.PI * 2);
+          ctx.fillStyle = TRACE;
+          ctx.fill();
+        });
+
+        ctx.globalAlpha = 1;
+      }
+
+      window.addEventListener('resize', resize);
+      resize();
+    })();
+
+    /* ── Smooth active nav highlighting ── */
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('.nav-links a');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          navLinks.forEach(l => {
+            l.style.color = l.getAttribute('href') === '#' + e.target.id
+              ? 'var(--trace)' : '';
+          });
+        }
+      });
+    }, { threshold: 0.4 });
+    sections.forEach(s => observer.observe(s));
+  </script>
+</body>
+
+</html>
